@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <string.h>
+
+#define SIZE 2  // Matrix size
+
+// Function to multiply key matrix with message vector and get the cipher text
+void hillCipherEncrypt(int keyMatrix[SIZE][SIZE], int messageVector[SIZE], int cipherVector[SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        cipherVector[i] = 0;
+        for (int j = 0; j < SIZE; j++) {
+            cipherVector[i] += keyMatrix[i][j] * messageVector[j];
+        }
+        cipherVector[i] %= 26;  // Mod 26 for alphabetic characters
+    }
+}
+
+// Function to convert a string into a vector of integers (A=0, B=1, ..., Z=25)
+void stringToVector(char *str, int vector[SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        vector[i] = str[i] - 'A';
+    }
+}
+
+// Function to print a vector as letters
+void printCipherText(int vector[SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        printf("%c", vector[i] + 'A');
+    }
+}
+
+int main() {
+    // Define the 2x2 key matrix
+    int keyMatrix[SIZE][SIZE] = {{3, 3}, {2, 5}};  // Example key
+
+    char message[] = "HI";  // Example message
+    int messageVector[SIZE], cipherVector[SIZE];
+
+    // Convert message to vector
+    stringToVector(message, messageVector);
+
+    // Encrypt the message
+    hillCipherEncrypt(keyMatrix, messageVector, cipherVector);
+
+    // Print the encrypted message
+    printf("Encrypted Message: ");
+    printCipherText(cipherVector);
+    
+    return 0;
+}
