@@ -1,0 +1,41 @@
+#include <stdio.h>
+
+#define SIZE 3
+
+// Function to find modular inverse of matrix
+void modInverseMatrix(int matrix[SIZE][SIZE], int mod, int invMatrix[SIZE][SIZE]) {
+    // Placeholder for actual modular inverse calculation
+    // Real implementation would calculate inverse using determinants and adjugate
+    // ...
+}
+
+// Function to decrypt using Hill Cipher
+void hillCipherDecrypt(int invMatrix[SIZE][SIZE], int cipherVector[SIZE], int plainVector[SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        plainVector[i] = 0;
+        for (int j = 0; j < SIZE; j++) {
+            plainVector[i] += invMatrix[i][j] * cipherVector[j];
+        }
+        plainVector[i] %= 26;
+    }
+}
+
+int main() {
+    int keyMatrix[SIZE][SIZE] = {{6, 24, 1}, {13, 16, 10}, {20, 17, 15}};  // Example key matrix
+    int cipherVector[SIZE] = {19, 7, 10};  // Example ciphertext vector
+    int invMatrix[SIZE][SIZE];  // Inverse key matrix
+    int plainVector[SIZE];
+
+    modInverseMatrix(keyMatrix, 26, invMatrix);  // Calculate modular inverse
+
+    hillCipherDecrypt(invMatrix, cipherVector, plainVector);
+
+    // Print decrypted message
+    printf("Decrypted message: ");
+    for (int i = 0; i < SIZE; i++) {
+        printf("%c", plainVector[i] + 'A');
+    }
+    printf("\n");
+
+    return 0;
+}
