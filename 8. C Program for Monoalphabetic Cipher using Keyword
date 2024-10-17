@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+void generateCipher(char *keyword, char *cipher) {
+    int used[26] = {0};  // To mark letters that are already used
+    int index = 0;
+    
+    // Add keyword characters to cipher
+    for (int i = 0; keyword[i] != '\0'; i++) {
+        char letter = toupper(keyword[i]);
+        if (!used[letter - 'A']) {
+            cipher[index++] = letter;
+            used[letter - 'A'] = 1;
+        }
+    }
+    
+    // Add remaining alphabet characters to cipher
+    for (char letter = 'A'; letter <= 'Z'; letter++) {
+        if (!used[letter - 'A']) {
+            cipher[index++] = letter;
+        }
+    }
+    cipher[index] = '\0';  // Null-terminate the cipher
+}
+
+void encryptText(char *plaintext, char *cipher, char *ciphertext) {
+    for (int i = 0; plaintext[i] != '\0'; i++) {
+        if (isalpha(plaintext[i])) {
+            char letter = toupper(plaintext[i]);
+            ciphertext[i] = cipher[letter - 'A'];
+        } else {
+            ciphertext[i] = plaintext[i];  // Non-alphabetic characters remain the same
+        }
+    }
+    ciphertext[strlen(plaintext)] = '\0';  // Null-terminate the ciphertext
+}
+
+void decryptText(char *ciphertext, char *cipher, char *decrypted) {
+    for (int i = 0; ciphertext[i] != '\0'; i++) {
+        if (isalpha(ciphertext[i])) {
+            char letter = toupper(ciphertext[i]);
+            // Find position of the ciphertext letter in the cipher
+            for (int j = 0; j < 26; j++) {
+                if (cipher[j] == letter) {
+                    decrypted[i] = 'A' + j;
+                    break;
+                }
+            }
+        } else {
+            decrypted[i] = ciphertext[i];  // Non-alphabetic characters remain the same
+        }
+    }
+    decrypted[strlen(ciphertext)] = '\0';  // Null-terminate the decrypted text
+}
+
+int main() {
+    char keyword[] = "CIPHER";
+    char cipher[27];  // Cipher for the alphabet
+    char plaintext[] = "meet me at the usual place at ten";
+    char ciphertext[100], decrypted[100];
+    
+    generateCipher(keyword, cipher);
+    
+    printf("Generated Cipher: %s\n", cipher);
+    
+    // Encrypt the plaintext
+    encryptText(plaintext, cipher, ciphertext);
+    printf("Encrypted Text: %s\n", ciphertext);
+    
+    // Decrypt the ciphertext
+    decryptText(ciphertext, cipher, decrypted);
+    printf("Decrypted Text: %s\n", decrypted);
+    
+    return 0;
+}
