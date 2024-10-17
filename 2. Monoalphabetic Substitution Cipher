@@ -1,0 +1,28 @@
+#include <stdio.h>
+#include <ctype.h>
+
+void monoalphabeticCipher(char *text, char *key) {
+    for (int i = 0; text[i] != '\0'; i++) {
+        if (isalpha(text[i])) {
+            if (islower(text[i]))
+                text[i] = key[text[i] - 'a'];
+            else
+                text[i] = toupper(key[text[i] - 'A']);
+        }
+    }
+}
+
+int main() {
+    char text[100], key[26];
+
+    printf("Enter the plaintext: ");
+    fgets(text, sizeof(text), stdin);
+
+    printf("Enter the 26-letter cipher key: ");
+    scanf("%s", key);
+
+    monoalphabeticCipher(text, key);
+    printf("Ciphertext: %s", text);
+
+    return 0;
+}
