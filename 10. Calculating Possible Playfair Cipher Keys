@@ -1,0 +1,105 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#define SIZE 5
+
+char keySquare[SIZE][SIZE];
+
+// Function to remove duplicate letters from the key
+void removeDuplicates(char* str) {
+    int len = strlen(str);
+    int index = 0;
+    for (int i = 0; i < len; i++) {
+        if (str[i] == 'J') str[i] = 'I';  // Treat 'J' as 'I'
+        int j;
+        for (j = 0; j < i; j++) {
+            if (str[i] == str[j]) break;
+        }
+        if (j == i) str[index++] = str[i];
+    }
+    str[index] = '\0';
+}
+
+// Function to create the Playfair cipher matrix
+void createKeySquare(char* key) {
+    removeDuplicates(key);
+    int used[26] = {0};
+    used['J' - 'A'] = 1;  // Skip 'J'
+
+    int index = 0;
+    for (int i = 0; key[i] != '\0'; i++) {
+        if (!used[key[i] - 'A']) {
+            keySquare[index / SIZE][index % SIZE] = key[i];
+            used[key[i] - 'A'] = 1;
+            index++;
+        }
+    }
+
+    // Fill the rest of the matrix
+    for (char ch = 'A'; ch <= 'Z'; ch++) {
+        if (!used[ch - 'A']) {
+            keySquare[index / SIZE][index % SIZE] = ch;
+            used[ch - 'A'] = 1;
+            index++;
+        }
+    }
+}
+
+// Function to encrypt digraphs using Playfair cipher
+void playfairEncrypt(char* plaintext, char* ciphertext) {
+    int len = strlen(plaintext);
+    int x1, y1, x2, y2;
+
+    for (int i = 0; i < len; i += 2) {
+        char first = plaintext[i];
+        char second = (i + 1 < len) ? plaintext[i + 1] : 'X';  // Add 'X' for padding
+
+        if (first == second) second = 'X';  // Handle repeating letters
+
+        // Find positions of the characters in the key square
+        for (int r = 0; r < SIZE; r++) {
+            for (int c = 0; c < SIZE; c++) {
+                if (keySquare[r][c] == first) {
+                    x1 = r; y1 = c;
+                }
+                if (keySquare[r][c] == second) {
+                    x2 = r; y2 = c;
+                }
+            }
+        }
+
+        // Apply Playfair encryption rules
+        if (x1 == x2) {
+            // Same row: shift right
+            ciphertext[i] = keySquare[x1][(y1 + 1) % SIZE];
+            ciphertext[i + 1] = keySquare[x2][(y2 + 1) % SIZE];
+        } else if (y1 == y2) {
+            // Same column: shift down
+            ciphertext[i] = keySquare[(x1 + 1) % SIZE][y1];
+            ciphertext[i + 1] = keySquare[(x2 + 1) % SIZE][y2];
+        } else {
+            // Rectangle swap
+            ciphertext[i] = keySquare[x1][y2];
+            ciphertext[i + 1] = keySquare[x2][y1];
+        }
+    }
+    ciphertext[len] = '\0';
+}
+
+int main() {
+    char key[] = "CIPHER";  // Example key
+    char plaintext[] = "MUSTSEEYOUOVERCADOGANWESTCOMINGATONCE";
+    char ciphertext[100];
+
+    // Create key square
+    createKeySquare(key);
+
+    // Encrypt the message
+    playfairEncrypt(plaintext, ciphertext);
+
+    // Print the encrypted text
+    printf("Encrypted Message: %s\n", ciphertext);
+
+    return 0;
+}
