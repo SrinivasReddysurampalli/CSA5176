@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+// Function to encrypt using one-time pad (Vigenère cipher)
+void encryptOTP(char *plaintext, int *key, char *ciphertext) {
+    for (int i = 0; plaintext[i] != '\0'; i++) {
+        if (plaintext[i] == ' ') {
+            ciphertext[i] = ' ';  // Preserve spaces
+        } else {
+            int shift = key[i];
+            ciphertext[i] = ((plaintext[i] - 'A') + shift) % 26 + 'A';
+        }
+    }
+    ciphertext[strlen(plaintext)] = '\0';  // Null-terminate the ciphertext
+}
+
+int main() {
+    srand(time(0));  // Seed the random number generator
+
+    char plaintext[] = "MEET ME AT THE USUAL PLACE";  // Example plaintext
+    int key[strlen(plaintext)];
+    char ciphertext[100];
+
+    // Generate random key
+    printf("Random Key: ");
+    for (int i = 0; i < strlen(plaintext); i++) {
+        if (plaintext[i] == ' ') {
+            key[i] = 0;  // No shift for spaces
+        } else {
+            key[i] = rand() % 26;  // Generate random shift between 0 and 25
+            printf("%d ", key[i]);
+        }
+    }
+    printf("\n");
+
+    // Encrypt the plaintext
+    encryptOTP(plaintext, key, ciphertext);
+    printf("Encrypted Text: %s\n", ciphertext);
+    
+    return 0;
+}
