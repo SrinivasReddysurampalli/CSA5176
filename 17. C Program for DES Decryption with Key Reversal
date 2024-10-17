@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <string.h>
+
+// Dummy DES key generation function
+void generateKeys(char keys[16][48]) {
+    // Normally, we would derive 16 subkeys (K1 to K16) from the initial key
+    for (int i = 0; i < 16; i++) {
+        // Example: fill with dummy data for simplicity
+        sprintf(keys[i], "Key%d", i + 1);
+    }
+}
+
+// DES decryption function (with keys in reverse)
+void desDecrypt(const char *ciphertext, char *plaintext, char keys[16][48]) {
+    // Decrypt using keys in reverse order (K16, ..., K1)
+    for (int i = 15; i >= 0; i--) {
+        // Apply key[i] to ciphertext (simplified)
+        printf("Applying %s...\n", keys[i]);
+    }
+    strcpy(plaintext, ciphertext);  // Placeholder for actual DES decryption logic
+}
+
+int main() {
+    char ciphertext[] = "EncryptedMessage";
+    char plaintext[100];
+    char keys[16][48];
+
+    // Generate 16 DES keys
+    generateKeys(keys);
+
+    // Decrypt the message
+    desDecrypt
