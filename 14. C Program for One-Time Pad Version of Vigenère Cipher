@@ -1,0 +1,40 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+// Function to encrypt using a one-time pad (Vigenère cipher)
+void oneTimePadEncrypt(char *plaintext, char *ciphertext, int *key) {
+    for (int i = 0; plaintext[i] != '\0'; i++) {
+        if (plaintext[i] >= 'A' && plaintext[i] <= 'Z') {
+            ciphertext[i] = ((plaintext[i] - 'A') + key[i]) % 26 + 'A';
+        } else {
+            ciphertext[i] = plaintext[i];  // Preserve non-alphabetic characters
+        }
+    }
+    ciphertext[strlen(plaintext)] = '\0';  // Null-terminate the string
+}
+
+int main() {
+    char plaintext[] = "MEETMEATTHEUSUALPLACE";
+    int key[100];
+    char ciphertext[100];
+
+    srand(time(0));
+
+    // Generate random key
+    printf("Random key: ");
+    for (int i = 0; i < strlen(plaintext); i++) {
+        key[i] = rand() % 26;
+        printf("%d ", key[i]);
+    }
+    printf("\n");
+
+    // Encrypt the plaintext
+    oneTimePadEncrypt(plaintext, ciphertext, key);
+
+    // Print encrypted message
+    printf("Encrypted Message: %s\n", ciphertext);
+
+    return 0;
+}
