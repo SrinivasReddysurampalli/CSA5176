@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#define SIZE 5
+
+void generateMatrix(char key[], char matrix[SIZE][SIZE]) {
+    int alpha[26] = {0}, k = 0;
+    int x = 0, y = 0;
+
+    for (int i = 0; key[i] != '\0'; i++) {
+        if (alpha[key[i] - 'a'] == 0 && key[i] != 'j') {
+            matrix[x][y] = key[i];
+            alpha[key[i] - 'a'] = 1;
+            y++;
+            if (y == SIZE) {
+                x++;
+                y = 0;
+            }
+        }
+    }
+
+    for (int i = 0; i < 26; i++) {
+        if (alpha[i] == 0 && (i + 'a') != 'j') {
+            matrix[x][y] = i + 'a';
+            y++;
+            if (y == SIZE) {
+                x++;
+                y = 0;
+            }
+        }
+    }
+}
+
+void printMatrix(char matrix[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            printf("%c ", matrix[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    char key[100], matrix[SIZE][SIZE];
+    
+    printf("Enter the keyword: ");
+    scanf("%s", key);
+
+    for (int i = 0; i < strlen(key); i++)
+        key[i] = tolower(key[i]);
+
+    generateMatrix(key, matrix);
+    printf("5x5 Playfair Matrix:\n");
+    printMatrix(matrix);
+
+    return 0;
+}
