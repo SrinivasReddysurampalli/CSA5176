@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+char matrix[5][5];
+int used[26] = {0};
+
+// Function to generate Playfair matrix based on a keyword
+void generateMatrix(char *keyword) {
+    int index = 0;
+    // Process keyword
+    for (int i = 0; keyword[i] != '\0'; i++) {
+        char letter = toupper(keyword[i]);
+        if (letter == 'J') letter = 'I';  // J is treated as I
+        if (!used[letter - 'A']) {
+            matrix[index / 5][index % 5] = letter;
+            used[letter - 'A'] = 1;
+            index++;
+        }
+    }
+    
+    // Fill remaining letters
+    for (char letter = 'A'; letter <= 'Z'; letter++) {
+        if (letter == 'J') continue;  // Skip J
+        if (!used[letter - 'A']) {
+            matrix[index / 5][index % 5] = letter;
+            used[letter - 'A'] = 1;
+            index++;
+        }
+    }
+}
+
+// Function to display the 5x5 matrix
+void displayMatrix() {
+    printf("Playfair Matrix:\n");
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            printf("%c ", matrix[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+// Function to encrypt pairs of letters using Playfair cipher rules
+void playfairEncrypt(char *plaintext, char *ciphertext) {
+    // Your encryption logic here based on the matrix
+    // This will handle rules like same row, same column, or forming rectangle
+    // Example only demonstrates matrix generation
+}
+
+int main() {
+    char keyword[] = "PLAYFAIR";
+    generateMatrix(keyword);
+    displayMatrix();
+    
+    // Sample plaintext encryption (implementation needed for encryption rules)
+    char plaintext[] = "meet me at the usual place at ten";
+    char ciphertext[100];
+    
+    playfairEncrypt(plaintext, ciphertext);
+    printf("Encrypted Text: %s\n", ciphertext);
+    
+    return 0;
+}
