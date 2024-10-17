@@ -1,0 +1,39 @@
+#include <stdio.h>
+#include <math.h>
+
+// Function to calculate modular exponentiation
+long long modExp(long long base, long long exp, long long mod) {
+    long long result = 1;
+    while (exp > 0) {
+        if (exp % 2 == 1) {
+            result = (result * base) % mod;
+        }
+        exp = exp >> 1;
+        base = (base * base) % mod;
+    }
+    return result;
+}
+
+// Function for RSA decryption
+long long rsaDecrypt(long long ciphertext, long long d, long long n) {
+    return modExp(ciphertext, d, n);
+}
+
+int main() {
+    // Public key (n, e)
+    long long n = 55;   // n = p * q (p = 5, q = 11)
+    long long e = 3;    // Public exponent
+
+    // Private key (d)
+    long long d = 27;   // Calculated using Extended Euclidean Algorithm
+
+    // Ciphertext to be decrypted
+    long long ciphertext = 10;
+
+    // Decrypt the ciphertext using the private key
+    long long plaintext = rsaDecrypt(ciphertext, d, n);
+
+    printf("Decrypted plaintext: %lld\n", plaintext);
+
+    return 0;
+}
