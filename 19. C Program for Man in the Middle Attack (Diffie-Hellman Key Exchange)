@@ -1,0 +1,59 @@
+#include <stdio.h>
+#include <math.h>
+
+// Function to perform modular exponentiation
+int modExp(int base, int exp, int mod) {
+    int result = 1;
+    base = base % mod;
+    while (exp > 0) {
+        if (exp % 2 == 1) {
+            result = (result * base) % mod;
+        }
+        exp = exp >> 1;
+        base = (base * base) % mod;
+    }
+    return result;
+}
+
+int main() {
+    int p = 23;  // Public prime number
+    int g = 5;   // Public primitive root
+
+    // Alice's private key (kept secret)
+    int a = 6;
+    // Bob's private key (kept secret)
+    int b = 15;
+    // Attacker's private key (kept secret)
+    int e = 10;
+
+    // Step 1: Alice computes A = g^a mod p and sends it to Bob (intercepted by Eve)
+    int A = modExp(g, a, p);
+    printf("Alice sends A = %d\n", A);
+
+    // Step 2: Eve intercepts A, sends her E = g^e mod p to Bob
+    int E = modExp(g, e, p);
+    printf("Eve sends E = %d to Bob instead of A\n", E);
+
+    // Step 3: Bob computes B = g^b mod p and sends it to Alice (intercepted by Eve)
+    int B = modExp(g, b, p);
+    printf("Bob sends B = %d\n", B);
+
+    // Step 4: Eve intercepts B and sends her E = g^e mod p to Alice
+    printf("Eve sends E = %d to Alice instead of B\n", E);
+
+    // Alice computes the shared secret using E instead of B (mitm attack)
+    int aliceSharedSecret = modExp(E, a, p);
+    printf("Alice's shared secret: %d\n", aliceSharedSecret);
+
+    // Bob computes the shared secret using E instead of A (mitm attack)
+    int bobSharedSecret = modExp(E, b, p);
+    printf("Bob's shared secret: %d\n", bobSharedSecret);
+
+    // Eve computes the shared secrets with both Alice and Bob
+    int eveWithAlice = modExp(A, e, p);
+    int eveWithBob = modExp(B, e, p);
+    printf("Eve's shared secret with Alice: %d\n", eveWithAlice);
+    printf("Eve's shared secret with Bob: %d\n", eveWithBob);
+
+    return 0;
+}
