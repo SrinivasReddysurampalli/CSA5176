@@ -1,0 +1,37 @@
+#include <stdio.h>
+
+// Function to calculate modular inverse
+int modInverse(int a, int m) {
+    for (int x = 1; x < m; x++)
+        if ((a * x) % m == 1)
+            return x;
+    return -1;
+}
+
+// Function to decrypt the affine cipher
+void affineDecrypt(char* ciphertext, int a, int b) {
+    int inv_a = modInverse(a, 26);
+    if (inv_a == -1) {
+        printf("Decryption not possible. No modular inverse for 'a'.\n");
+        return;
+    }
+
+    for (int i = 0; ciphertext[i] != '\0'; i++) {
+        if (ciphertext[i] >= 'A' && ciphertext[i] <= 'Z') {
+            int C = ciphertext[i] - 'A';
+            int P = (inv_a * (C - b + 26)) % 26;  // Apply decryption formula
+            ciphertext[i] = P + 'A';
+        }
+    }
+}
+
+int main() {
+    char ciphertext[] = "BUUUUU";  // Example: replace with actual ciphertext
+    int a = 5, b = 8;  // Example key for affine cipher
+
+    printf("Ciphertext: %s\n", ciphertext);
+    affineDecrypt(ciphertext, a, b);
+    printf("Decrypted text: %s\n", ciphertext);
+
+    return 0;
+}
